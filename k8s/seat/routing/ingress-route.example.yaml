@@ -1,0 +1,18 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: eve-corp-seat-https-route
+  namespace: eve-corp
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`your-host`)
+      kind: Rule
+      middlewares:
+        - name: seat-security
+      services:
+        - name: eve-seat-service
+          port: 8080
+  tls:
+    certResolver: traefik-cert-resolver-name

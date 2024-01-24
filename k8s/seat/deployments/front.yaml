@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eve-seat
+  namespace: eve-corp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eve-seat
+  template:
+    metadata:
+      labels:
+        app: eve-seat
+    spec:
+      serviceAccountName: eve-corp-api-reader
+      restartPolicy: Always
+      volumes:
+        - name: seat-volume
+          persistentVolumeClaim:
+            claimName: eve-seat-pvc
+        - name: seat-styling
+          configMap:
+            name: seat-styling
+      containers:
+        - name: eve-seat-front
+          image: ghcr.io/eveseat/seat:5
+          imagePullPolicy: Always
+          command: [ "/docker-entrypoint.sh", "web" ]
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: /var/www/seat/storage
+              name: seat-volume
+            - mountPath: /var/www/seat/public/custom-layout.css
+              name: seat-styling
+              subPath: custom-layout.css
+            - mountPath: /var/www/seat/public/custom-layout-mini.css
+              name: seat-styling
+              subPath: custom-layout-mini.css
+          envFrom:
+            - configMapRef:
+                name: eve-seat-env-config
+            - secretRef:
+                name: eve-seat-secrets
+        - name: eve-seat-scheduler
+          image: ghcr.io/eveseat/seat:5
+          imagePullPolicy: Always
+          command: [ "/docker-entrypoint.sh", "cron" ]
+          ports:
+            - containerPort: 8080
+              hostPort: 8081
+          volumeMounts:
+            - mountPath: /var/www/seat/storage
+              name: seat-volume
+          envFrom:
+            - configMapRef:
+                name: eve-seat-env-config
+            - secretRef:
+                name: eve-seat-secrets

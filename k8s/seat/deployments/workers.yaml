@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eve-seat-workers
+  namespace: eve-corp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eve-seat-workers
+  template:
+    metadata:
+      labels:
+        app: eve-seat-workers
+    spec:
+      serviceAccountName: eve-corp-api-reader
+      restartPolicy: Always
+      volumes:
+        - name: seat-volume
+          persistentVolumeClaim:
+            claimName: eve-seat-pvc
+      containers:
+        - name: eve-seat-worker
+          image: ghcr.io/eveseat/seat:5
+          imagePullPolicy: Always
+          command: [ "/docker-entrypoint.sh", "worker" ]
+          volumeMounts:
+            - mountPath: /var/www/seat/storage
+              name: seat-volume
+          envFrom:
+            - configMapRef:
+                name: eve-seat-env-config
+            - secretRef:
+                name: eve-seat-secrets

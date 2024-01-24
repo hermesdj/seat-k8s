@@ -1,0 +1,16 @@
+# nonk8s
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: seat-skaffolding
+build:
+  local:
+    useBuildkit: true
+manifests:
+  rawYaml:
+    - k8s/seat/seat-styling.yaml
+    - k8s/seat/deployments/front.yaml
+    - k8s/seat/deployments/workers.yaml
+    - k8s/seat/service.yaml
+    - k8s/seat/routing/traefik-middleware.yaml
+    - k8s/seat/routing/ingress-route.yaml

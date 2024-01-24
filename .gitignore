@@ -1,0 +1,5 @@
+.idea
+.env
+k8s/seat/env-config.yaml
+k8s/seat/seat-external-secret.yaml
+k8s/seat/routing/ingress-route.yaml

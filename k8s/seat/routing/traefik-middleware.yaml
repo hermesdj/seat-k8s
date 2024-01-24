@@ -1,0 +1,22 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: seat-security
+  namespace: eve-corp
+spec:
+  headers:
+    browserXssFilter: false
+    contentSecurityPolicy: "default-src 'none'; connect-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net https://snoopy.crypta.tech; img-src 'self' data: https://images.evetech.net https://img.shields.io; font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net; manifest-src 'self'"
+    contentTypeNosniff: true
+    customBrowserXSSValue: "0"
+    customResponseHeaders:
+      Server: ""
+      X-Powered-By: ""
+      X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex"
+    forceSTSHeader: true
+    frameDeny: true
+    permissionsPolicy: "accelerometer=(), autoplay=(), camera=(), cross-origin-isolated=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=*, usb=(), web-share=(), xr-spatial-tracking=()"
+    referrerPolicy: same-origin
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 63072000
