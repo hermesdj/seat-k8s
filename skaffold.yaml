@@ -14,3 +14,17 @@ manifests:
     - k8s/seat/service.yaml
     - k8s/seat/routing/traefik-middleware.yaml
     - k8s/seat/routing/ingress-route.yaml
+deploy:
+  kubectl:
+    defaultNamespace: eve-corp
+profiles:
+  - name: prod
+    activation:
+      - kubeContext: preprod
+    build:
+      tagPolicy:
+        sha256: { }
+    deploy:
+      kubeContext: preprod
+      kubectl:
+        defaultNamespace: eve-corp
